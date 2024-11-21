@@ -1,8 +1,36 @@
+import { getUser } from "@/utils/auth";
+import { db } from "@/utils/db";
+import { User } from "@/utils/schema";
+import { eq } from "drizzle-orm";
+import moment from "moment";
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
 
-const HomeHero = () => {
+const HomeHero = async () => {
+  const user = await getUser();
+
+  if (user) {
+    // get first if logged in user is already in the database
+    const existingUser = await db
+      .select()
+      .from(User)
+      .where(eq(User.email, user?.primaryEmailAddress?.emailAddress as string));
+
+    if (existingUser?.length === 0) {
+      // if the logged in user is not in the database yet, then add
+      await db.insert(User).values({
+        userId: user?.id as string,
+        name: user?.fullName as string,
+        email: user?.primaryEmailAddress?.emailAddress as string,
+        imageUrl: user?.imageUrl as string,
+        createdAt: moment().format("MM-DD-YYYY"),
+      });
+
+      console.log("user added to database");
+    }
+  }
+
   return (
     <section className="body-font">
       <div className="container mx-auto flex px-5 py-24 md:flex-row flex-col items-center">
