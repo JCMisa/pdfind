@@ -1,9 +1,8 @@
-import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { LayoutDashboard, Shield } from "lucide-react";
 import Image from "next/image";
 import React from "react";
-import UploadPdfDialog from "./UploadPdfDialog";
+import Link from "next/link";
 
 const Sidebar = () => {
   return (
@@ -22,11 +21,12 @@ const Sidebar = () => {
       </div>
 
       <div className="mt-10">
-        <UploadPdfDialog>
-          <Button className="w-full text-dark-100 font-bold">
-            + Upload PDF
-          </Button>
-        </UploadPdfDialog>
+        <Link
+          href={`/dashboard/uploadPdf`}
+          className="flex items-center justify-center text-dark-100 font-bold bg-primary hover:bg-primary-100 transition-all p-3 rounded-lg"
+        >
+          + Upload PDF
+        </Link>
 
         <div className="flex gap-2 items-center p-3 mt-5 hover:bg-dark transition-all rounded-lg cursor-pointer">
           <LayoutDashboard className="w-4 h-4" />
