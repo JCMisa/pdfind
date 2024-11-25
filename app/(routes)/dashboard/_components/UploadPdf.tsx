@@ -17,6 +17,7 @@ import { LoaderCircle } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { uploadPdf } from "@/app/actions/pdf-action";
 import { toast } from "sonner";
+import axios from "axios";
 
 const UploadPdf = () => {
   const handleSubmit = async (prevState: unknown, formData: FormData) => {
@@ -56,6 +57,14 @@ const UploadPdf = () => {
     handleSubmit,
     undefined
   );
+
+  const getParsedPdf = async () => {
+    const apiResp = await axios.get(`/api/pdf-loader`);
+
+    if (apiResp?.data?.status === "SUCCESS") {
+      console.log("LANGCHAIN PDF PARSED RESULT: ", apiResp?.data?.result);
+    }
+  };
 
   return (
     <Dialog>
@@ -98,13 +107,14 @@ const UploadPdf = () => {
                 Close
               </Button>
             </DialogClose>
-            <Button disabled={isPending}>
+            <Button type="submit" disabled={isPending}>
               {isPending ? (
                 <LoaderCircle className="w-4 h-4 animate-spin" />
               ) : (
                 "Upload"
               )}
             </Button>
+            <Button onClick={() => getParsedPdf()}>TEST API CALL</Button>
           </DialogFooter>
         </form>
       </DialogContent>

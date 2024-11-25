@@ -10,13 +10,17 @@ import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import moment from "moment";
 import { v4 as uuidv4 } from "uuid";
 
-export const uploadPdf = async (formValues: any) => {
+export const uploadPdf = async (formValues: {
+  noteTitle: string;
+  pdfFile: any;
+}) => {
   const user = await getUser();
 
   try {
     // get the viewable url of pdf from firebase storage
     const fileName = formValues.pdfFile.name;
     const storageRef = ref(storage, "pdfind/" + fileName);
+    // this will store the file in firebase storage
     await uploadBytes(storageRef, formValues.pdfFile).then(() => {
       console.log("upload file complete");
     });
@@ -27,7 +31,7 @@ export const uploadPdf = async (formValues: any) => {
       noteId: noteId,
       userId: user?.id as string,
       pdfTitle: formValues?.noteTitle,
-      pdfUrl: await getDownloadURL(storageRef),
+      pdfUrl: await getDownloadURL(storageRef), // this will get the viewable url from storage and store it in db
       createdBy: user?.primaryEmailAddress?.emailAddress as string,
       createdAt: moment().format("MM-DD-YYYY"),
     });
